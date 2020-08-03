@@ -44,8 +44,7 @@ class Compile {
   }
 
   compile(node) {
-    const nodeAttrs = node.atrributes
-
+    const nodeAttrs = node.attributes || []
     Array.prototype.slice.call(nodeAttrs).forEach(attr => {
       const attrName = attr.name
       if (this.isDirective(attrName)) {
@@ -95,9 +94,8 @@ const compileUtil = Object.freeze({
     this.bind(node, vm, exp, 'model')
 
     let value = this._getVMVal(vm, exp)
-
     node.addEventListener('input', e => {
-      const newValue = e.target.value
+      let newValue = e.target.value
       if (value === newValue) return
 
       this._setVMVal(vm, exp, newValue)
@@ -110,7 +108,7 @@ const compileUtil = Object.freeze({
   },
 
   bind(node, vm, exp, dir) {
-    const updaterFn = updaterFn[`${dir}Updater`]
+    const updaterFn = updater[`${dir}Updater`]
 
     updaterFn && updaterFn(node, this._getVMVal(vm, exp))
 
@@ -160,7 +158,7 @@ const updater = Object.freeze({
   },
 
   classUpdater(node, value, oldValue) {
-    const className = node.className
+    let className = node.className
     className = className.replace(oldValue, '').replace(/\s$/, '')
     const space = className && String(value) ? ' ' : ''
     node.className = className + space + value

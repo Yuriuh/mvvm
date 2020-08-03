@@ -1,10 +1,10 @@
 class Observer {
-  constructor() {
+  constructor(data) {
     this.data = data
     this.walk(data)
   }
   walk(data) {
-    Observer.keys(data).forEach(key => {
+    Object.keys(data).forEach(key => {
       this.convert(key, data[key])
     })
   }
@@ -12,8 +12,8 @@ class Observer {
     this.defineReactive(this.data, key, val)
   }
   defineReactive(data, key, val) {
-    const dep = new dep()
-    const childObj = observer(val)
+    const dep = new Dep()
+    let childObj = observe(val)
 
     Object.defineProperty(data, key, {
       enumerable: true,
@@ -24,19 +24,19 @@ class Observer {
         }
         return val
       },
-      set() {
+      set(newVal) {
         if (newVal === val) {
           return
         }
         val = newVal
-        childObj = observer(newVal)
+        childObj = observe(newVal)
         dep.notify()
       }
     })
   }
 }
 
-function observer(value) {
+function observe(value) {
   if (!value || typeof value !== 'object') {
     return
   }
@@ -54,7 +54,7 @@ class Dep {
     this.subs.push(sub)
   }
   depend() {
-    Dep.target.addSub(this)
+    Dep.target.addDep(this)
   }
   removeSub(sub) {
     const index = this.subs.indexOf(sub)

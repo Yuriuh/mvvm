@@ -8,8 +8,9 @@ class Watcher {
     if (typeof expOrFn === 'function') {
       this.getter = expOrFn
     } else {
-      this.getter = thiss.parseGetter(expOrFn.trim())
+      this.getter = this.parseGetter(expOrFn.trim())
     }
+    this.value = this.get()
   }
   update() {
     this.run()
