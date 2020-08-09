@@ -1,2 +1,2 @@
-# mvvm
+# MVVM
 A mini vue library.
